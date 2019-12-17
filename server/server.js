@@ -7,7 +7,7 @@ const publicPath = path.join(__dirname + "/../public")
 const port = process.env.PORT || 3000
 let app = express()
 let server = http.createServer(app)
-let io = socketIO(server)
+let io = socketIO(server) // initialize a new instance of socket.io 
 
 app.use(express.static(publicPath))
 
@@ -20,31 +20,43 @@ app.use(express.static(publicPath))
  * socket.on :- will listen those event 
  * 
  */
-io.on('connection', (socket) => {
+
+
+/**
+ * --------- ACC to SOCKET.IO documentation ----------
+ * To send an event to everyone(BROADCAST), Socket.IO gives us the >>-- io.emit --<<
+ * 
+ */
+io.on('connection', (socket) => { // Listening on the connection event
     console.log("A new user just connected")
 
-    socket.emit('newMessage', {
-        from: "Admin",
-        texts: "Welcome to the chat app! ",
-        createdAt: new Date().getTime()
-    })
+    // socket.emit('newMessage', {
+    //     from: "Admin",
+    //     texts: "Welcome to the chat app! ",
+    //     createdAt: new Date().getTime()
+    // })
 
-    socket.broadcast.emit('newMessage', {
-        from: "Admin",
-        texts: "New user joined the chat app! ",
-        createdAt: new Date().getTime()
-    })
+    // socket.broadcast.emit('newMessage', {
+    //     from: "Admin",
+    //     texts: "New user joined the chat app! ",
+    //     createdAt: new Date().getTime()
+    // })
 
-    socket.on('createMessage', (message) => {
-        console.log("CREATEmESSAGE.", message)
-        io.emit('newMessage', {
-            from: message.from,
-            text: message.text,
-            createdAt: new Date().getTime()
-        })
-    })
+    // socket.on('createMessage', (message) => {
+    //     console.log("CREATEmESSAGE.", message)
+    //     io.emit('newMessage', {
+    //         from: message.from,
+    //         text: message.text,
+    //         createdAt: new Date().getTime()
+    //     })
+    // })
 
-    socket.on('disconnect', () => {
+    socket.on('chat message', function(msg) {
+        console.log('message: ' + msg);
+        io.emit('chat message', msg);
+    });
+
+    socket.on('disconnect', () => { // Each socket also fires a special disconnect event
         console.log("User was disconnected.")
     })
 })
