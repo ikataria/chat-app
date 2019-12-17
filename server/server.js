@@ -28,7 +28,7 @@ app.use(express.static(publicPath))
  * 
  */
 io.on('connection', (socket) => { // Listening on the connection event
-    console.log("A new user just connected")
+    // console.log("A new user just connected")
 
     // socket.emit('newMessage', {
     //     from: "Admin",
@@ -51,12 +51,19 @@ io.on('connection', (socket) => { // Listening on the connection event
     //     })
     // })
 
-    socket.on('chat message', function(msg) {
+    io.emit('chat message', {
+        from: 'ADMIN hu be !',
+        texts: 'Welcome to my chat room '
+    })
+
+    socket.on('chat message', function(msg) { // print out the chat message event
         console.log('message: ' + msg);
         io.emit('chat message', msg);
     });
 
-    socket.on('disconnect', () => { // Each socket also fires a special disconnect event
+
+
+    socket.on('disconnect', () => { // Each socket also fires a special Disconnect event
         console.log("User was disconnected.")
     })
 })
